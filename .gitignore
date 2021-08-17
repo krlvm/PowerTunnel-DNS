@@ -1,0 +1,7 @@
+# Idea Files
+/.idea/
+/PowerTunnel-DNS.iml
+
+# Build Files
+/build/
+/.gradle/

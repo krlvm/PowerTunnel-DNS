@@ -1,0 +1,17 @@
+[
+  {
+    "key": "dns",
+    "type": "string",
+    "defaultValue": ""
+  },
+  {
+    "key": "dnssec",
+    "type": "checkbox",
+    "defaultValue": "false"
+  },
+  {
+    "key": "fallback",
+    "type": "switch",
+    "defaultValue": "true"
+  }
+]
