@@ -18,7 +18,6 @@
 package io.github.krlvm.powertunnel.plugins.dns;
 
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
-import io.github.krlvm.powertunnel.sdk.exceptions.ProxyStartException;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +80,8 @@ public class DNSPlugin extends PowerTunnelPlugin {
                 resolver = new ValidatingResolver(resolver);
             }
         }
+
+        if(resolver == null) return;
 
         final Resolver pResolver = resolver;
         proxy.setResolver((host, port) -> {
