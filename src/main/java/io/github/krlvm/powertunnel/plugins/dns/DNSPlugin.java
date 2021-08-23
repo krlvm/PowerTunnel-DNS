@@ -38,9 +38,22 @@ public class DNSPlugin extends PowerTunnelPlugin {
         if(!validateAndroidVersion()) return;
         final Configuration configuration = readConfiguration();
 
-        String dns = configuration.get("dns", "");
+        String dns;
+        final DNSPreset preset;
+        try {
+            preset = DNSPreset.valueOf(configuration.get("dns_preset", "custom").toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new RuntimeException("Invalid DNS Preset");
+        }
 
-        final boolean doh = dns.startsWith("https://");
+        if(preset == DNSPreset.CUSTOM) {
+            dns = configuration.get("dns", "");
+        } else {
+            dns = preset.getAddress();
+        }
+
+        final boolean doh = dns.startsWith("https://")
+                || (configuration.getBoolean("allow_insecure", false) && dns.startsWith("http://"));
         final boolean sec = configuration.getBoolean("dnssec", false);
         proxy.setAllowFallbackDNSResolver(configuration.getBoolean("fallback", true));
 

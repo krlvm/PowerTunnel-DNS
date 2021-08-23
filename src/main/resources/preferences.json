@@ -1,12 +1,45 @@
 [
   {
+    "key": "dns_preset",
+    "type": "select",
+    "items": [
+      {
+        "key": "custom"
+      },
+      {
+        "key": "google",
+        "name": "Google"
+      },
+      {
+        "key": "google_doh",
+        "name": "Google (DoH)"
+      },
+      {
+        "key": "cloudflare",
+        "name": "Cloudflare"
+      },
+      {
+        "key": "cloudflare_doh",
+        "name": "Cloudflare (DoH)"
+      }
+    ],
+    "defaultValue": "custom"
+  },
+  {
     "key": "dns",
     "type": "string",
-    "defaultValue": ""
+    "defaultValue": "",
+    "dependency": "dns_preset",
+    "dependencyValue": "custom"
   },
   {
     "key": "dnssec",
     "type": "checkbox",
+    "defaultValue": "false"
+  },
+  {
+    "key": "allow_insecure",
+    "type": "switch",
     "defaultValue": "false"
   },
   {
