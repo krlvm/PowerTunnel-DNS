@@ -55,7 +55,6 @@ public class DNSPlugin extends PowerTunnelPlugin {
         final boolean doh = dns.startsWith("https://")
                 || (configuration.getBoolean("allow_insecure", false) && dns.startsWith("http://"));
         final boolean sec = configuration.getBoolean("dnssec", false);
-        proxy.setAllowFallbackDNSResolver(configuration.getBoolean("fallback", true));
 
         if (dns.endsWith("/")) {
             dns = dns.substring(0, dns.length() - 1);
@@ -97,7 +96,7 @@ public class DNSPlugin extends PowerTunnelPlugin {
         if(resolver == null) return;
 
         final Resolver pResolver = resolver;
-        proxy.setResolver((host, port) -> {
+        registerProxyListener(new DNSListener((host, port) -> {
             final Lookup lookup;
             try {
                 lookup = new Lookup(host, Type.A);
@@ -111,7 +110,7 @@ public class DNSPlugin extends PowerTunnelPlugin {
             } else {
                 throw new UnknownHostException();
             }
-        });
+        }));
     }
 
     private static boolean validateAndroidVersion() {
