@@ -29,7 +29,7 @@ public enum DNSPreset {
 
 
 
-    private String address;
+    private final String address;
 
     DNSPreset(String address) {
         this.address = address;
