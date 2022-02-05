@@ -31,12 +31,11 @@ configure(fatJar) {
 dependencies {
     implementation('io.github.krlvm.powertunnel:sdk') {
         version {
-            branch = 'next'
+            branch = 'master'
         }
     }
 
-    fatImplementation 'dnsjava:dnsjava:3.4.1'
-    fatImplementation 'org.jitsi:dnssecjava:2.0.0'
+    fatImplementation 'dnsjava:dnsjava:3.5.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
