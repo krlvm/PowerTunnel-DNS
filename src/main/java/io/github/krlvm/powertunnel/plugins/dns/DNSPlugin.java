@@ -20,14 +20,19 @@ package io.github.krlvm.powertunnel.plugins.dns;
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
+import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import org.jetbrains.annotations.NotNull;
-import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xbill.DNS.*;
+import org.xbill.DNS.config.AndroidResolverConfigProvider;
+import org.xbill.DNS.config.ResolverConfigProvider;
+import org.xbill.DNS.dnssec.ValidatingResolver;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DNSPlugin extends PowerTunnelPlugin {
 
@@ -58,6 +63,17 @@ public class DNSPlugin extends PowerTunnelPlugin {
 
         if (dns.endsWith("/")) {
             dns = dns.substring(0, dns.length() - 1);
+        }
+
+        if (getServer().getPlatform() == PowerTunnelPlatform.ANDROID) {
+            final List<ResolverConfigProvider> providers = new ArrayList<>();
+            for (ResolverConfigProvider provider : ResolverConfig.getConfigProviders()) {
+                if (!(provider instanceof AndroidResolverConfigProvider)) {
+                    providers.add(provider);
+                } else {
+                    providers.add(new AndroidResolverConfigListProvider(proxy.getDNSServers(), proxy.getDNSDomainsSearchPath()));
+                }
+            }
         }
 
         Resolver resolver = null;
