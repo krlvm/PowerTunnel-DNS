@@ -74,6 +74,7 @@ public class DNSPlugin extends PowerTunnelPlugin {
                     providers.add(new AndroidResolverConfigListProvider(proxy.getDNSServers(), proxy.getDNSDomainsSearchPath()));
                 }
             }
+            ResolverConfig.setConfigProviders(providers);
         }
 
         Resolver resolver = null;
