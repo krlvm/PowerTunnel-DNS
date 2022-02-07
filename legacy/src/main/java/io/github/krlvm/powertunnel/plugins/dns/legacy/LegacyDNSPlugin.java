@@ -65,7 +65,7 @@ public class LegacyDNSPlugin extends PowerTunnelPlugin {
 
         Resolver resolver = null;
         if(doh) {
-            resolver = new LegacyDohResolver(dns);
+            resolver = new LegacyDohResolver(dns, Base64Provider.getProvider());
         } else {
             if(!dns.isEmpty()) {
                 if (!DNSParser.isIPv4(dns) && !DNSParser.isIPv4WithPort(dns) && !DNSParser.isIPv6(dns) && !DNSParser.isIPv6WithPort(dns)) {

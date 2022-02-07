@@ -37,8 +37,8 @@ public class DNSListener extends ProxyAdapter {
     }
 
     @Override
-    public boolean onResolutionRequest(@NotNull DNSRequest request) {
-        if(request.getResponse() != null) return true;
+    public Boolean onResolutionRequest(@NotNull DNSRequest request) {
+        if(request.getResponse() != null) return null;
         try {
             request.setResponse(resolver.resolve(request.getHost(), request.getPort()));
             return true;

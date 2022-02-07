@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -41,11 +40,14 @@ public class LegacyDohResolver implements Resolver {
     private final Logger log = LoggerFactory.getLogger(LegacyDohResolver.class);
 
     private final String host;
+    private final Base64Provider base64;
+
     private int timeout;
     private TSIG tsig;
 
-    public LegacyDohResolver(String host) {
+    public LegacyDohResolver(String host, Base64Provider base64) {
         this.host = host;
+        this.base64 = base64;
 
         this.setTimeout(5);
     }
@@ -97,7 +99,7 @@ public class LegacyDohResolver implements Resolver {
             tsig.apply(query, null);
         }
 
-        final String encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(query.toWire());
+        final String encoded = base64.encodeURL(query.toWire());
 
         HttpURLConnection con = null;
         try {

@@ -32,6 +32,9 @@ dependencies {
         }
     }
 
+    // ToDo: Linux support
+    implementation files(System.getenv('LocalAppData') + '\\Android\\Sdk\\platforms\\android-30\\android.jar')
+
     fatImplementation 'dnsjava:dnsjava:2.1.9'
     fatImplementation 'org.jitsi:dnssecjava:1.2.0'
 
