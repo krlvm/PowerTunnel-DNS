@@ -58,6 +58,9 @@ public class DNSPlugin extends PowerTunnelPlugin {
                 || (configuration.getBoolean("allow_insecure", false) && dns.startsWith("http://"));
         final boolean sec = configuration.getBoolean("dnssec", false);
 
+        final boolean ignoreHosts = configuration.getBoolean("ignore_system_hosts", false);
+        System.setProperty("dnsjava.lookup.use_hosts_file", String.valueOf(!ignoreHosts));
+
         if (dns.endsWith("/")) {
             dns = dns.substring(0, dns.length() - 1);
         }
@@ -101,6 +104,7 @@ public class DNSPlugin extends PowerTunnelPlugin {
         }
 
         if(resolver == null) return;
+        LOGGER.info("DNS Resolver: '{}' [dnsOverHttps={}, dnsSec={}, ignoreHosts={}]", dns, doh, sec, ignoreHosts);
 
         final Resolver pResolver = resolver;
         registerProxyListener(new DNSListener((host, port) -> {

@@ -41,5 +41,10 @@
     "key": "allow_insecure",
     "type": "switch",
     "defaultValue": "false"
+  },
+  {
+    "key": "ignore_system_hosts",
+    "type": "switch",
+    "defaultValue": "false"
   }
 ]
