@@ -14,18 +14,15 @@ configurations {
     compile.extendsFrom(fatImplementation)
 }
 
-task fatJar(type: Jar) {
+task fatJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing the main classes and all dependencies.') {
     archiveClassifier = 'all'
+    with jar
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
     from {
         configurations.fatImplementation.asFileTree.files.collect { zipTree(it) }
     } {
         exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
     }
-    with jar
-}
-configure(fatJar) {
-    group = 'build'
-    description = 'Assembles a jar archive containing the main classes and all dependencies.'
 }
 
 dependencies {
