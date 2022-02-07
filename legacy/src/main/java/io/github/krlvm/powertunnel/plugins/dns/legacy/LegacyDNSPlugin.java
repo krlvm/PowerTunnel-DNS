@@ -15,29 +15,26 @@
  * along with PowerTunnel-DNS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package io.github.krlvm.powertunnel.plugins.dns;
+package io.github.krlvm.powertunnel.plugins.dns.legacy;
 
 import io.github.krlvm.powertunnel.sdk.configuration.Configuration;
 import io.github.krlvm.powertunnel.sdk.plugin.PowerTunnelPlugin;
 import io.github.krlvm.powertunnel.sdk.proxy.ProxyServer;
-import io.github.krlvm.powertunnel.sdk.types.PowerTunnelPlatform;
 import org.jetbrains.annotations.NotNull;
+import org.jitsi.dnssec.validator.ValidatingResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xbill.DNS.*;
-import org.xbill.DNS.config.AndroidResolverConfigProvider;
-import org.xbill.DNS.dnssec.ValidatingResolver;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-public class DNSPlugin extends PowerTunnelPlugin {
+public class LegacyDNSPlugin extends PowerTunnelPlugin {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DNSPlugin.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LegacyDNSPlugin.class);
 
     @Override
     public void onProxyInitialization(@NotNull ProxyServer proxy) {
-        if(!validateAndroidVersion()) return;
         final Configuration configuration = readConfiguration();
 
         String dns;
@@ -61,21 +58,14 @@ public class DNSPlugin extends PowerTunnelPlugin {
         }
 
         final boolean sec = configuration.getBoolean("dnssec", false);
-        final boolean ignoreHosts = configuration.getBoolean("ignore_system_hosts", false);
-        System.setProperty("dnsjava.lookup.use_hosts_file", String.valueOf(!ignoreHosts));
 
         if (dns.endsWith("/")) {
             dns = dns.substring(0, dns.length() - 1);
         }
 
-        if (getServer().getPlatform() == PowerTunnelPlatform.ANDROID) {
-            AndroidResolverConfigProvider.dnsServers = proxy.getDNSServers();
-            AndroidResolverConfigProvider.domainsSearchPath = proxy.getDNSDomainsSearchPath();
-        }
-
         Resolver resolver = null;
         if(doh) {
-            resolver = new DohResolver(dns);
+            resolver = new LegacyDohResolver(dns);
         } else {
             if(!dns.isEmpty()) {
                 if (!DNSParser.isIPv4(dns) && !DNSParser.isIPv4WithPort(dns) && !DNSParser.isIPv6(dns) && !DNSParser.isIPv6WithPort(dns)) {
@@ -110,7 +100,7 @@ public class DNSPlugin extends PowerTunnelPlugin {
         }
 
         if(resolver == null) return;
-        LOGGER.info("DNS Resolver: '{}' [dnsOverHttps={}, dnsSec={}, ignoreHosts={}]", dns, doh, sec, ignoreHosts);
+        LOGGER.info("DNS Resolver (L): '{}' [dnsOverHttps={}, dnsSec={}]", dns, doh, sec);
 
         final Resolver pResolver = resolver;
         registerProxyListener(new DNSListener((host, port) -> {
@@ -128,16 +118,5 @@ public class DNSPlugin extends PowerTunnelPlugin {
                 throw new UnknownHostException();
             }
         }));
-    }
-
-    private static boolean validateAndroidVersion() {
-        try {
-            // dnsjava uses APIs that are not available on old Android versions
-            Class.forName("java.time.Duration");
-            return true;
-        } catch (ClassNotFoundException ex) {
-            LOGGER.error("DNS Plugin is not supported on your Android version");
-            return false;
-        }
     }
 }

@@ -1,0 +1,1 @@
+Legacy DNS plugin with limited functionality is built for Android version of PowerTunnel to support Android versions older than Android 8 Oreo, which is required by recent dnsjava version, on which this plugin depends, to work.

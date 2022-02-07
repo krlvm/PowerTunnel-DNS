@@ -5,3 +5,6 @@ sourceControl {
         producesModule('io.github.krlvm.powertunnel:sdk')
     }
 }
+
+include 'legacy'
+
