@@ -17,6 +17,7 @@
 
 package io.github.krlvm.powertunnel.plugins.dns.legacy;
 
+import io.github.krlvm.powertunnel.sdk.utiities.Base64Compat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xbill.DNS.*;
@@ -40,14 +41,12 @@ public class LegacyDohResolver implements Resolver {
     private final Logger log = LoggerFactory.getLogger(LegacyDohResolver.class);
 
     private final String host;
-    private final Base64Provider base64;
 
     private int timeout;
     private TSIG tsig;
 
-    public LegacyDohResolver(String host, Base64Provider base64) {
+    public LegacyDohResolver(String host) {
         this.host = host;
-        this.base64 = base64;
 
         this.setTimeout(5);
     }
@@ -99,7 +98,7 @@ public class LegacyDohResolver implements Resolver {
             tsig.apply(query, null);
         }
 
-        final String encoded = base64.encodeURL(query.toWire());
+        final String encoded = Base64Compat.encodeURLToString(query.toWire());
 
         HttpURLConnection con = null;
         try {
